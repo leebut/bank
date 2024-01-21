@@ -1,10 +1,14 @@
 import { useReducer } from "react";
 
 import "./App.css";
-import Test from "./Test";
 import Main from "./MainSection";
 import OpenLogin from "./OpenLogin";
 import Loan from "./Loan";
+import Header from "./Header";
+import LandingScreen from "./LandingScreen";
+import Deposit from "./Deposit";
+import Withdrawal from "./Withdrawal";
+import Buttons from "./Buttons";
 
 const randAccountNum = crypto.randomUUID();
 
@@ -14,6 +18,8 @@ const initAccount = {
   accountBalance: 6500,
   loan: false,
   loanAmount: null,
+  deposit: false,
+  withdrawal: false,
 };
 
 function accountReducer(state, action) {
@@ -34,29 +40,69 @@ function accountReducer(state, action) {
       return {
         ...state,
         loanAmount: Number(action.payload),
-        accountBalance: Number(state.accountBalance) - action.payload,
+        accountBalance: Number(state.accountBalance) + Number(action.payload),
       };
+    case "cancelLoan":
+      return { ...state, loan: false };
+    case "makeDeposit":
+      return { ...state, deposit: true };
+    case "depositNow":
+      return {
+        ...state,
+        accountBalance: Number(state.accountBalance) + Number(action.payload),
+        deposit: false,
+      };
+    case "cancelDeposit":
+      return { ...state, deposit: false };
+    case "makeWithdrawal":
+      return { ...state, withdrawal: true };
+    case "withdrawNow":
+      return {
+        ...state,
+        accountBalance: Number(state.accountBalance) - Number(action.payload),
+        withdrawal: false,
+      };
+    case "cancelWithdrawal":
+      return { ...state, withdrawal: false };
   }
 }
 
 function App() {
   const [
-    { status, accountNumber, accountBalance, loan, loanAmount },
+    {
+      status,
+      accountNumber,
+      accountBalance,
+      loan,
+      loanAmount,
+      deposit,
+      withdrawal,
+    },
     dispatch,
   ] = useReducer(accountReducer, initAccount);
 
   return (
     <Main>
       <>
+        <Header />
         {status === "inactive" && <OpenLogin dispatch={dispatch} />}
         {status === "active" && (
           <>
-            <Test
+            <LandingScreen
               status={status}
               accountNumber={accountNumber}
               accountBalance={accountBalance}
             />
-            <Loan loan={loan} dispatch={dispatch} loanAmount={loanAmount} />
+            {/* <Loan loan={loan} dispatch={dispatch} loanAmount={loanAmount} />
+            <Deposit deposit={deposit} dispatch={dispatch} />
+            <Withdrawal dispatch={dispatch} withdrawal={withdrawal} /> */}
+            <Buttons
+              deposit={deposit}
+              dispatch={dispatch}
+              withdrawal={withdrawal}
+              loan={loan}
+              loanAmount={loanAmount}
+            />
           </>
         )}
       </>
