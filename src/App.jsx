@@ -3,19 +3,18 @@ import { useReducer } from "react";
 import "./App.css";
 import Main from "./MainSection";
 import OpenLogin from "./OpenLogin";
-import Loan from "./Loan";
 import Header from "./Header";
 import LandingScreen from "./LandingScreen";
-import Deposit from "./Deposit";
-import Withdrawal from "./Withdrawal";
 import Buttons from "./Buttons";
 
 const randAccountNum = crypto.randomUUID();
 
 const initAccount = {
   status: "inactive",
+  username: "",
+  accountName: "",
   accountNumber: randAccountNum,
-  accountBalance: 6500,
+  accountBalance: 0,
   loan: false,
   loanAmount: null,
   deposit: false,
@@ -24,6 +23,8 @@ const initAccount = {
 
 function accountReducer(state, action) {
   switch (action.type) {
+    case "addUser":
+      return { ...state, username: action.payload };
     case "openAccount":
       return {
         ...state,
@@ -42,8 +43,15 @@ function accountReducer(state, action) {
         loanAmount: Number(action.payload),
         accountBalance: Number(state.accountBalance) + Number(action.payload),
       };
+    case "repayLoan":
+      return {
+        ...state,
+        loanAmount: state.loanAmount - action.payload,
+        accountBalance: state.accountBalance - action.payload,
+      };
     case "cancelLoan":
       return { ...state, loan: false };
+
     case "makeDeposit":
       return { ...state, deposit: true };
     case "depositNow":
@@ -71,6 +79,7 @@ function App() {
   const [
     {
       status,
+      username,
       accountNumber,
       accountBalance,
       loan,
@@ -89,13 +98,12 @@ function App() {
         {status === "active" && (
           <>
             <LandingScreen
-              status={status}
+              dispatch={dispatch}
               accountNumber={accountNumber}
               accountBalance={accountBalance}
+              username={username}
             />
-            {/* <Loan loan={loan} dispatch={dispatch} loanAmount={loanAmount} />
-            <Deposit deposit={deposit} dispatch={dispatch} />
-            <Withdrawal dispatch={dispatch} withdrawal={withdrawal} /> */}
+
             <Buttons
               deposit={deposit}
               dispatch={dispatch}

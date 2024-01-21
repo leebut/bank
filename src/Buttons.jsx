@@ -43,7 +43,7 @@ function Buttons({ deposit, dispatch, withdrawal, loan, loanAmount }) {
         )}
         {withdrawal === true && (
           <input
-            type="text"
+            type="number"
             name="make-withdrawal"
             placeholder="Withdrawal amount"
             className="border border-sky-600"
@@ -60,7 +60,7 @@ function Buttons({ deposit, dispatch, withdrawal, loan, loanAmount }) {
       </div>
 
       <div className="flex">
-        {!loan ? (
+        {!loan || loanAmount === 0 ? (
           <button
             className="bg-yellow-500 text-3xl"
             onClick={() => dispatch({ type: "loanOut" })}
@@ -72,10 +72,11 @@ function Buttons({ deposit, dispatch, withdrawal, loan, loanAmount }) {
         )}
         {loan === true && (
           <input
-            type="text"
+            type="number"
             name="takeOutLoan"
             placeholder="Loan amount"
             disabled={loanAmount > 0 ? true : false}
+            value={loanAmount && loanAmount}
             className={
               loanAmount > 0
                 ? "bg-slate-400 border border-red-500 outline-none"
@@ -87,6 +88,23 @@ function Buttons({ deposit, dispatch, withdrawal, loan, loanAmount }) {
                 dispatch({ type: "amountLoaned", payload: inputValue });
               } else if (e.key === "Escape") {
                 dispatch({ type: "cancelLoan" });
+              }
+            }}
+          />
+        )}
+
+        {loanAmount > 0 && (
+          <input
+            type="number"
+            name="repay-loan"
+            placeholder="Amount to repay"
+            className={"border border-blue-500 outline-none"}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                const inputValue = e.target.value;
+                dispatch({ type: "repayLoan", payload: inputValue });
+              } else if (e.key === "Escape") {
+                dispatch({ type: "cancelRepayLoan" });
               }
             }}
           />
