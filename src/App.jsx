@@ -16,7 +16,7 @@ const initAccount = {
   accountNumber: randAccountNum,
   accountBalance: 0,
   loan: false,
-  loanAmount: null,
+  loanAmount: 0,
   deposit: false,
   withdrawal: false,
 };
@@ -44,11 +44,21 @@ function accountReducer(state, action) {
         accountBalance: Number(state.accountBalance) + Number(action.payload),
       };
     case "repayLoan":
-      return {
-        ...state,
-        loanAmount: state.loanAmount - action.payload,
-        accountBalance: state.accountBalance - action.payload,
-      };
+      if (state.loanAmount - action.payload < 0) return state;
+      if (state.loanAmount - action.payload !== 0) {
+        return {
+          ...state,
+          loanAmount: state.loanAmount - action.payload,
+          accountBalance: state.accountBalance - action.payload,
+        };
+      } else
+        return {
+          ...state,
+          loan: false,
+          loanAmount: 0,
+          accountBalance: state.accountBalance - action.payload,
+        };
+
     case "cancelLoan":
       return { ...state, loan: false };
 
@@ -72,6 +82,11 @@ function accountReducer(state, action) {
       };
     case "cancelWithdrawal":
       return { ...state, withdrawal: false };
+    case "closeAccount":
+      return { ...initAccount };
+    default: {
+      throw Error("You cannot do that" + action.type);
+    }
   }
 }
 
@@ -103,14 +118,16 @@ function App() {
               accountBalance={accountBalance}
               username={username}
             />
-
-            <Buttons
-              deposit={deposit}
-              dispatch={dispatch}
-              withdrawal={withdrawal}
-              loan={loan}
-              loanAmount={loanAmount}
-            />
+            {username && (
+              <Buttons
+                accountBalance={accountBalance}
+                deposit={deposit}
+                dispatch={dispatch}
+                withdrawal={withdrawal}
+                loan={loan}
+                loanAmount={loanAmount}
+              />
+            )}
           </>
         )}
       </>

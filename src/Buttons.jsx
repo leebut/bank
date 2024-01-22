@@ -1,23 +1,35 @@
-function Buttons({ deposit, dispatch, withdrawal, loan, loanAmount }) {
+import { useRef } from "react";
+
+function Buttons({
+  deposit,
+  dispatch,
+  withdrawal,
+  loan,
+  loanAmount,
+  accountBalance,
+}) {
+  const repayLoanInput = useRef(null);
   return (
     <div className="flex flex-col">
       <div className="flex">
         {!deposit ? (
           <button
-            className="bg-green-400 text-3xl"
+            className="my-4 border-2 border-black p-3 text-3xl bg-green-300"
             onClick={() => dispatch({ type: "makeDeposit" })}
           >
             Deposit funds
           </button>
         ) : (
-          <p>Deposit amount: </p>
+          <label htmlFor="makeDeposit" className="text-3xl">
+            Deposit amount:{" "}
+          </label>
         )}
         {deposit === true && (
           <input
-            type="text"
+            type="number"
             name="makeDeposit"
             placeholder="Deposit amount"
-            className="border border-sky-600"
+            className="border-2 border-sky-600 text-3xl p-2 w-48 outline-none ml-2 rounded-lg"
             onKeyUp={(e) => {
               if (e.key === "Enter") {
                 const inputValue = e.target.value;
@@ -33,20 +45,22 @@ function Buttons({ deposit, dispatch, withdrawal, loan, loanAmount }) {
       <div className="flex">
         {!withdrawal ? (
           <button
-            className="bg-sky-400 text-3xl"
+            className="my-4 border-2 border-black p-3 text-3xl bg-sky-400"
             onClick={() => dispatch({ type: "makeWithdrawal" })}
           >
             Withdraw funds
           </button>
         ) : (
-          <p>Withdrawal amount: </p>
+          <label className="text-3xl" htmlFor="make-withdrawal">
+            Withdrawal amount:{" "}
+          </label>
         )}
         {withdrawal === true && (
           <input
             type="number"
             name="make-withdrawal"
-            placeholder="Withdrawal amount"
-            className="border border-sky-600"
+            placeholder="Amount"
+            className="border-2 border-sky-600 text-3xl p-2 my-2 w-48 outline-none ml-2 rounded-lg"
             onKeyUp={(e) => {
               if (e.key === "Enter") {
                 const inputValue = e.target.value;
@@ -62,25 +76,28 @@ function Buttons({ deposit, dispatch, withdrawal, loan, loanAmount }) {
       <div className="flex">
         {!loan || loanAmount === 0 ? (
           <button
-            className="bg-yellow-500 text-3xl"
+            className="my-4 border-2 border-black p-3 text-3xl bg-yellow-500"
             onClick={() => dispatch({ type: "loanOut" })}
           >
             Take out a loan
           </button>
         ) : (
-          <p>Loan amount: </p>
+          <label htmlFor="take-out-loan" className="text-3xl items-center">
+            Loan amount:{" "}
+          </label>
         )}
         {loan === true && (
           <input
             type="number"
-            name="takeOutLoan"
+            name="take-out-loan"
             placeholder="Loan amount"
             disabled={loanAmount > 0 ? true : false}
-            value={loanAmount && loanAmount}
+            // defaultValue={loanAmount > 0 ? loanAmount : ""}
+            defaultValue={loanAmount && loanAmount}
             className={
               loanAmount > 0
-                ? "bg-slate-400 border border-red-500 outline-none"
-                : "border border-blue-500 outline-none"
+                ? "bg-slate-400 border-2 text-3xl p-2 my-2 mr-2 w-48 outline-none ml-2 rounded-lg border-red-500 cursor-not-allowed"
+                : "border-2 border-sky-600 text-3xl p-2 my-2 w-48 outline-none ml-2 rounded-lg"
             }
             onKeyUp={(e) => {
               if (e.key === "Enter") {
@@ -94,22 +111,37 @@ function Buttons({ deposit, dispatch, withdrawal, loan, loanAmount }) {
         )}
 
         {loanAmount > 0 && (
-          <input
-            type="number"
-            name="repay-loan"
-            placeholder="Amount to repay"
-            className={"border border-blue-500 outline-none"}
-            onKeyUp={(e) => {
-              if (e.key === "Enter") {
-                const inputValue = e.target.value;
-                dispatch({ type: "repayLoan", payload: inputValue });
-              } else if (e.key === "Escape") {
-                dispatch({ type: "cancelRepayLoan" });
+          <div className="flex items-center">
+            <label className="text-3xl" htmlFor="repay-loan">
+              Repay loan:{" "}
+            </label>
+            <input
+              ref={repayLoanInput}
+              type="number"
+              name="repay-loan"
+              placeholder="Amount"
+              className={
+                "border-2 border-sky-600 text-3xl p-2 my-2 w-48 outline-none ml-2 rounded-lg"
               }
-            }}
-          />
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  const inputValue = e.target.value;
+                  dispatch({ type: "repayLoan", payload: inputValue });
+                  repayLoanInput.current.focus();
+                  repayLoanInput.current.select();
+                }
+              }}
+            />
+          </div>
         )}
       </div>
+      <button
+        className="my-4 border-2 border-black p-3 text-3xl w-max bg-red-300"
+        disabled={accountBalance < 0}
+        onClick={() => dispatch({ type: "closeAccount" })}
+      >
+        Close Account
+      </button>
     </div>
   );
 }

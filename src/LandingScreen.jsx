@@ -2,22 +2,31 @@ function LandingScreen({ dispatch, accountNumber, accountBalance, username }) {
   const styles = "text-2xl";
   return (
     <div>
-      <input
-        type="text"
-        name="username"
-        className="border border-sky-800 outline-none"
-        placeholder="Username"
-        onKeyUp={(e) => {
-          if (e.key === "Enter") {
-            const inputValue = e.target.value;
-            dispatch({ type: "addUser", payload: inputValue });
-          }
-        }}
-      />
-      <p className={styles}>Hello {username}</p>
-      {/* <p className={styles}>{status}</p> */}
-      <p className={styles}>Account Number: {accountNumber}</p>
-      <p className={styles}>Balance: £{accountBalance}</p>
+      {!username && (
+        <input
+          type="text"
+          name="username"
+          className="text-3xl p-2 mt-4 border-2 border-sky-800 rounded-lg outline-none"
+          placeholder="username"
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              const inputValue = e.target.value;
+              dispatch({ type: "addUser", payload: inputValue });
+            }
+          }}
+        />
+      )}
+      {username && (
+        <>
+          <p className={styles}>Hello {username}</p>
+          <p className="text-2xl border-t-2 border-b-2 mt-4 w-max">
+            <strong>Account Number:</strong> {accountNumber}
+          </p>
+          <p className="text-2xl font-bold border-t-2 border-b-2 mt-4 w-max">
+            Balance: £{accountBalance}
+          </p>
+        </>
+      )}
     </div>
   );
 }
