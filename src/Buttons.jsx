@@ -9,6 +9,8 @@ function Buttons({
   accountBalance,
 }) {
   const repayLoanInput = useRef(null);
+  console.log(loanAmount);
+
   return (
     <div className="flex flex-col">
       <div className="flex">
@@ -96,7 +98,7 @@ function Buttons({
             defaultValue={loanAmount && loanAmount}
             className={
               loanAmount > 0
-                ? "bg-slate-400 border-2 text-3xl p-2 my-2 mr-2 w-48 outline-none ml-2 rounded-lg border-red-500 cursor-not-allowed"
+                ? "bg-slate-200 border-2 text-3xl text-gray-600 p-2 h-min my-2 mr-2 w-48 outline-none ml-2 rounded-lg border-gray-500 cursor-not-allowed"
                 : "border-2 border-sky-600 text-3xl p-2 my-2 w-48 outline-none ml-2 rounded-lg"
             }
             onKeyUp={(e) => {
@@ -111,27 +113,33 @@ function Buttons({
         )}
 
         {loanAmount > 0 && (
-          <div className="flex items-center">
-            <label className="text-3xl" htmlFor="repay-loan">
-              Repay loan:{" "}
-            </label>
-            <input
-              ref={repayLoanInput}
-              type="number"
-              name="repay-loan"
-              placeholder="Amount"
-              className={
-                "border-2 border-sky-600 text-3xl p-2 my-2 w-48 outline-none ml-2 rounded-lg"
-              }
-              onKeyUp={(e) => {
-                if (e.key === "Enter") {
-                  const inputValue = e.target.value;
-                  dispatch({ type: "repayLoan", payload: inputValue });
-                  repayLoanInput.current.focus();
-                  repayLoanInput.current.select();
+          <div className="flex flex-col border border-gray-400 bg-gray-200 p-1 rounded-lg">
+            <div className="flex items-center">
+              <label className="text-3xl" htmlFor="repay-loan">
+                Repay loan:{" "}
+              </label>
+              <input
+                ref={repayLoanInput}
+                type="number"
+                name="repay-loan"
+                placeholder="Amount"
+                className={
+                  "border-2 border-sky-600 text-3xl p-2 my-2 w-48 outline-none ml-2 rounded-lg"
                 }
-              }}
-            />
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    const inputValue = e.target.value;
+                    dispatch({ type: "repayLoan", payload: inputValue });
+                    repayLoanInput.current.focus();
+                    repayLoanInput.current.select();
+                  }
+                }}
+              />
+            </div>
+            <p className="text-3xl bg-gray-300 border-black py-1 border-t border-b">
+              Amount outstanding:{" "}
+              <span className="font-bold">{loanAmount}</span>
+            </p>
           </div>
         )}
       </div>

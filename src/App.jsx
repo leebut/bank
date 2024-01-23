@@ -16,7 +16,7 @@ const initAccount = {
   accountNumber: randAccountNum,
   accountBalance: 0,
   loan: false,
-  loanAmount: 0,
+  loanAmount: "",
   deposit: false,
   withdrawal: false,
 };
@@ -111,7 +111,7 @@ function App() {
         <Header />
         {status === "inactive" && <OpenLogin dispatch={dispatch} />}
         {status === "active" && (
-          <>
+          <section className="flex flex-col items-center">
             <LandingScreen
               dispatch={dispatch}
               accountNumber={accountNumber}
@@ -128,7 +128,7 @@ function App() {
                 loanAmount={loanAmount}
               />
             )}
-          </>
+          </section>
         )}
       </>
     </Main>

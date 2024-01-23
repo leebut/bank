@@ -1,7 +1,7 @@
 function Header() {
   return (
     <header>
-      <p className="text-3xl">React Bank Account Reducer</p>
+      <h1 className="text-4xl ml-5">React Bank Account Reducer</h1>
     </header>
   );
 }
